@@ -38,7 +38,7 @@ google_site_verification: # fill in to your verification string
 google_analytics:
   id: # fill in your Google Analytics ID
 
-theme_mode: dark
+theme_mode:
 
 # The CDN endpoint for images.
 # Notice that once it is assigned, the CDN url
