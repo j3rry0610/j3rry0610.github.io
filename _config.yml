@@ -10,7 +10,7 @@ timezone: Asia/Shanghai
 
 title: J3rry's Blog
 
-tagline: This is a subtitle.
+tagline: A blog to chronicle my adventures in CTF competitions and my academic explorations in the realm of web security.
 
 description: >- # used by seo meta and the atom feed
   A minimal, responsive and feature-rich Jekyll theme for technical writing.
