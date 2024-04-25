@@ -2,7 +2,8 @@
 layout: post
 title: "Buffer-Overflow Attack Lab (Server Version)"
 date: 2024-04-25
-categories: SEED Labs
+categories: [SEED-Labs, Software-Security]
+tags: [Overflow]
 ---
 
 # Buffer-Overflow Attack Lab (Server Version)
@@ -49,7 +50,7 @@ shellcode = (
 
 经过线上的反汇编工具我得到了如下的汇编代码。
 
-```nasm
+```assembly
 0:  eb 36                   jmp    0x38
 2:  5b                      pop    ebx
 3:  48                      dec    eax
@@ -382,7 +383,7 @@ GOT表是可写的，所以我们在第一次动态链接前修改GOT表中 `put
 
 我尝试了一下跳转到其他位置，不会有任何的结果返回，我猜测是因为栈被我们堆满了垃圾，所以程序不能正常运行。
 
-```nasm
+```assembly
 BITS 64
 
 mov byte [0x4034c8], 0x10
