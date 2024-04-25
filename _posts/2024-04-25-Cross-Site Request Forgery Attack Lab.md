@@ -1,3 +1,11 @@
+---
+layout: post
+title: "Cross-Site Request Forgery Attack Lab"
+date: 2024-04-25
+categories: [SEED-Labs, Web-Security]
+tags: [CSRF]
+---
+
 # Cross-Site Request Forgery Attack Lab
 
 CSRF攻击就是用户和一个正常网站有一个会话，一个攻击者网站通过向用户请求获得了正常网站的数据。

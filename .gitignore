@@ -22,3 +22,5 @@ package-lock.json
 assets/js/dist
 
 _posts/post.sh
+
+.DS_Store
