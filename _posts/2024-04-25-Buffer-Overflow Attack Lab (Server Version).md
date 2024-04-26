@@ -2,7 +2,7 @@
 layout: post
 title: "Buffer-Overflow Attack Lab (Server Version)"
 date: 2024-04-25
-categories: [SEED-Labs, Software-Security]
+categories: [SEED Labs, Software Security]
 tags: [Overflow]
 ---
 

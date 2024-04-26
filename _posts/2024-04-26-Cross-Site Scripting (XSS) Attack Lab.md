@@ -2,7 +2,7 @@
 layout: protected
 title: "Cross-Site Scripting (XSS) Attack Lab"
 date: 2024-04-26
-categories: [SEED-Labs, Web-Security]
+categories: [SEED Labs, Web Security]
 tags: [XSS]
 ---
 

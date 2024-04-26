@@ -2,7 +2,7 @@
 layout: post
 title: "Cross-Site Request Forgery Attack Lab"
 date: 2024-04-25
-categories: [SEED-Labs, Web-Security]
+categories: [SEED Labs, Web Security]
 tags: [CSRF]
 ---
 
