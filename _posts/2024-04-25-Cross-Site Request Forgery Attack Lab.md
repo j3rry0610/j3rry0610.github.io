@@ -10,6 +10,12 @@ tags: [CSRF]
 
 CSRF攻击就是用户和一个正常网站有一个会话，一个攻击者网站通过向用户请求获得了正常网站的数据。
 
+# Lab Setup
+
+我用的是mac M2芯片，所以要去官网下载arm64版本，然后启动docker。
+
+需要在/etc/hosts中配置域名，虽然我用我自己的电脑这么做不是很安心，然后把梯子关了才能正确访问，可能是因为vpn软件会绕过本机的DNS解析方式。
+
 # Task 1  Observing HTTP Request
 
 因为我平时抓包都是用burpsuite+chrome，所以这个任务我也是用burpsuite和chrome分别去看了一下他的包。
@@ -73,11 +79,9 @@ alice访问这个页面的时候就会尝试去加载这个URL，然后发出好
 
 观察发现跨域访问是没有cookie的，上网查了一下chrome取消了这个关闭samesite的选项，也就是说无论如何都关闭不了chrome的同源cookie检查。
 
-Chrome太强了，javascript也不行，我找到了一个84版本的chrome，关闭了他的samesite flag，成功了！
+Chrome太强了，javascript也不行，我找到了一个84版本的chrome，关闭了他的samesite flag，最后才成功。
 
-![Untitled](/assets/img/2024-04-25-Cross-Site Request Forgery Attack Lab/Untitled%209.png)
-
-后来发现其实这个lab的架构是希望我们写到”addfriend.html”里边，但这不重要。
+后来发现其实这个lab的结构是希望我们写到”addfriend.html”里边，但这不重要。
 
 # **Task 3 CSRF Attack using POST Request**
 
@@ -117,15 +121,15 @@ function forge_post()
 
 然后可看到POST成功。
 
+![Untitled](/assets/img/2024-04-25-Cross-Site Request Forgery Attack Lab/Untitled%209.png)
+
+**Question 1: The forged HTTP request needs Alice’s user id (guid) to work properly. If Boby targets Alice specifically, before the attack, he can find ways to get Alice’s user id. Boby does not know Alice’s Elgg password, so he cannot log into Alice’s account to get the information. Please describe how Boby can solve this problem.**
+
+可以通过在网页中搜索，在”http://www.seed-server.com/members”这个网页中有所有人的guid。
+
 ![Untitled](/assets/img/2024-04-25-Cross-Site Request Forgery Attack Lab/Untitled%2010.png)
 
-## Question 1
-
-可以通过在网页中搜索，在”http://www.seed-server.com/members”这个api中有所有人的guid。
-
-![Untitled](/assets/img/2024-04-25-Cross-Site Request Forgery Attack Lab/Untitled%2011.png)
-
-## Question 2
+**Question 2: If Boby would like to launch the attack to anybody who visits his malicious web page. In this case, he does not know who is visiting the web page beforehand. Can he still launch the CSRF attack to modify the victim’s Elgg profile? Please explain.**
 
 这是我做的一些尝试，我发现无论是谁访问“http://www.seed-server.com/profile”的时候都会跳转到自己的profile，然后这个html中有name和guid，所以我就可以这样获取name和guid。
 
@@ -187,13 +191,13 @@ async function forge_post()
 
 然后果然像文档说的那样，这个界面一直在请求，但是那边一直拒绝。
 
-![Untitled](/assets/img/2024-04-25-Cross-Site Request Forgery Attack Lab/Untitled%2012.png)
+![Untitled](/assets/img/2024-04-25-Cross-Site Request Forgery Attack Lab/Untitled%2011.png)
 
 # **Task 5 Experimenting with the SameSite Cookie Method**
 
 可以看到三个cookie。
 
-![Untitled](/assets/img/2024-04-25-Cross-Site Request Forgery Attack Lab/Untitled%2013.png)
+![Untitled](/assets/img/2024-04-25-Cross-Site Request Forgery Attack Lab/Untitled%2012.png)
 
 访问”http://example32.com”的链接和表单三个cookie都会发送过去。
 
@@ -211,7 +215,7 @@ async function forge_post()
 
 经过搜索发现为这个应用添加同源cookie的方式最好就是在apache server的配置文件.htaccess中配置，其中”Header edit Set-Cookie ^(.*)$ $1;SameSite=Lax”是我添加的内容，添加好了之后重启容器。
 
-```xml
+```
 <IfModule mod_headers.c>
         Header append Vary User-Agent env=!dont-vary
         Header edit Set-Cookie ^(.*)$ $1;SameSite=Lax
@@ -222,4 +226,4 @@ async function forge_post()
 
 ![Screenshot 2024-04-20 at 1.29.37 AM.png](/assets/img/2024-04-25-Cross-Site Request Forgery Attack Lab/Screenshot_2024-04-20_at_1.29.37_AM.png)
 
-![Untitled](/assets/img/2024-04-25-Cross-Site Request Forgery Attack Lab/Untitled%2014.png)
+![Untitled](/assets/img/2024-04-25-Cross-Site Request Forgery Attack Lab/Untitled%2013.png)

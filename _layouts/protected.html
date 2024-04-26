@@ -1,0 +1,55 @@
+---
+layout: default
+---
+
+<style>
+    #container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    #passwordInput {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-bottom: 10px;
+    }
+
+    #unlockButton {
+        padding: 10px 20px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    #unlockButton:hover {
+        background-color: #45a049;
+    }
+</style>
+
+{% if page.protected %}
+  <input type="password" id="passwordInput" placeholder="Enter password" onkeydown="if(event.keyCode==13) unlockContent()">
+  <button id="unlockButton" onclick="unlockContent()">Unlock</button>
+  <div id="content" style="display:none;">{{ page.content }}</div>
+{% else %}
+  {{ content }}
+{% endif %}
+
+<script>
+    function unlockContent() {
+        const input = document.getElementById('passwordInput').value;
+        const correctPassword = "{{ page.password }}";
+        if(input === correctPassword) {
+            document.getElementById('content').style.display = 'block';
+            document.getElementById('passwordInput').style.display = 'none';
+            document.getElementById('unlockButton').style.display = 'none';
+        } else {
+            alert('Incorrect password!');
+        }
+    }
+</script>
+

