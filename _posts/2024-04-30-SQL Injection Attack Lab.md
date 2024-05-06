@@ -1,5 +1,5 @@
 ---
-layout: protected
+layout: post
 title: "SQL Injection Attack Lab"
 date: 2024-04-30
 categories: [SEED Labs, Web Security]
